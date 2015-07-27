@@ -1,0 +1,266 @@
+Das Versionskontrollsystem Git. Erste Schritte.
+===============================================
+Frank Hofmann
+:subtitle:
+:doctype: book
+:copyright: Frank Hofmann
+:revnumber: 1.0.1
+:Author Initials: FH
+:edition: 1
+:lang: de
+:date: 27. Juli 2015
+:numbered:
+
+= Vorwort =
+
+ToDo.
+
+= Git verstehen =
+
+* wie funktioniert git?
+
+= Git einrichten =
+
+* Konfiguration von Git (allgemein)
+* Konfiguration per Repository
+* Nutzereinstellungen
+* Einstellungen überprüfen
+** 'git config --list'
+
+== Ausgewählte Dateien bei der Versionskontrolle ignorieren ==
+
+* warum will man das:
+** viele Programme erzeugen während der Ausführung automatisch
+   Zwischenergebnisse
+** die Zwischenergebnisse sind für die Versionsverwaltung nicht relevant
+** die Zwischenergebnisse ändern sich bei jedem Durchlauf und erzeugen
+   unnötigen Aufwand im Git
+** manche Dateitypen möchte man einfach nicht drinhaben
+
+* zentraler Ansatzpunkt: Datei '.gitignore'
+** Anlage im Root-Verzeichnis des Git-Repos, oder in dem jeweiligen
+   Verzeichnis
+** URL zur Dokumentation: http://git-scm.com/docs/gitignore
+
+* Schreibweise (Auswahl)
+** einzelne Datei ausschließen: 'datei.png'
+** alle PNG-Dateien ausschließen: '*.png'
+** alle Dateien im Verzeichnis 'test' ausschließen: 'test/**'
+** alle Dateien mit dem Namensbestandteil '.png' im gesamten Git-Repo
+ausschließen: '\**/*.png'
+
+.Beispieldatei für eine '.gitignore' eines LaTeX-Verzeichnisses
+----
+**/*.toc
+**/*.aux
+**/*.log
+**/*.pdf
+**/*.out
+**/*.swp
+**/*.bak
+----
+
+= Werkzeuge =
+
+* Kommandozeile
+* gitk
+* Github
+
+= Grundlegende Aktionen =
+
+== ein neues Repo erzeugen ==
+* 'git init'
+
+== ein bereits bestehendes Repo klonen ==
+* 'git clone'
+
+== Datei zum Einchecken (Commit) vorbereiten ==
+* 'git add'
+
+== Datei einchecken (Commit) ==
+* 'git commit -m'
+* 'git commit -am'
+
+== Datei umbenennen bzw. verschieben ==
+* 'git mv'
+
+== Datei löschen ==
+* 'git rm'
+
+== Status aller Aktionen anzeigen ==
+* 'git status'
+* 'git diff'
+* 'git diff --cached'
+* 'git diff --staged'
+
+== Commit-Historie anzeigen ==
+* 'git log'
+* 'git log -2'
+* 'git log --since=2.weeks'
+* 'git log --until'
+* 'git log --before'
+* 'git log --author'
+
+= Etwas außerhalb der Grundlagen =
+
+== Den letzten Commit ändern ==
+
+* 'git commit --amend'
+
+== Vorbereitete Dateien aus dem Commit herausnehmen ==
+
+* 'git reset HEAD Dateiname'
+
+== Änderungen rückgängig machen ==
+
+* 'git checkout -- Dateiname'
+
+= Gemeinsam arbeiten =
+
+== Referenz-Repo anzeigen ==
+
+* 'git remote -v'
+
+== Änderungen vom Referenz-Repo beziehen ==
+
+* 'git pull [Reponame]'
+* 'git fetch [Reponame]'
+
+== Lokale Änderungen in das Referenzrepo hochladen ==
+
+* 'git push [Reponame]'
+
+= Tips und Tricks =
+
+== Alle Commit-Messages in einer Zeile (Kurzfassung) ==
+
+* Schalter: 'log --pretty=online'
+
+* Aufbau:
+** linke Spalte: Commit-Hash
+** rechte Spalte: Commit-Message
+
+----
+$ git log --pretty=online
+7ab2ca311cc067ccb56f46998ca6e469f608451f flask microblog: sql schema
+97ac13969f10fc11f103ebf3d40fdd6223d2ab15 flask: basic flask application, url path decorator
+675ef58ad4631ead6e282c83eda2e16a61ddc61f flask: basic flask application with debug mode, README file
+...
+$
+----
+
+== Alle Commit-Messages in einer Zeile (Kurzfassung) gefiltert nach einem bestimmten Begriff ==
+
+* Kombination aus 'git' und 'grep'
+* Schalter: 'log --pretty=online'
+
+* Aufbau:
+** linke Spalte: Commit-Hash
+** rechte Spalte: Commit-Message
+
+----
+$ git log --pretty=online | grep --color flask
+7ab2ca311cc067ccb56f46998ca6e469f608451f flask microblog: sql schema
+97ac13969f10fc11f103ebf3d40fdd6223d2ab15 flask: basic flask application, url path decorator
+675ef58ad4631ead6e282c83eda2e16a61ddc61f flask: basic flask application with debug mode, README file
+...
+$
+----
+
+== Alle Commit-Messages in einer Zeile mit eigener Formatierung ==
+
+* Schalter: 'log --pretty=format:"Formatoptionen"'
+* Formatoptionen
+
+[cols="2*", options="header"]
+|===
+|Option
+|Beschreibung
+
+|'%H'
+|Commit-Hash
+
+|'%h'
+|Commit-Hash (Kurzform)
+
+|'%T'
+|Tree-Hash
+
+|'%t'
+|Tree-Hash (Kurzform)
+
+|'%P'
+|Parent-Hash
+
+|'%p'
+|Parent-Hash (Kurzform)
+
+|'%an'
+|Autorenname
+
+|'%ae'
+|Autorenemail
+
+|'%ad'
+|Datum der Änderung (Autor)
+
+|'%ar'
+|relatives Datum der Änderung (Autor)
+
+|'%cn'
+|Name des Committers
+
+|'%ce'
+|Email des Committers
+
+|'%cd'
+|Datum der Änderung (Committer)
+
+|'%cr'
+|relatives Datum der Änderung (Committer)
+
+|'%s'
+|Betreff oder Subject
+|===
+
+.Beispiel für Commit-Hash (Kurzform), Autorenname, relatives Datum der Änderung, Betreff/Commit-Message
+----
+$ git log --pretty=format:"%h - %an, %ar : %s"
+c6c680c - Axel Beckert, 6 weeks ago : "eigentlich" wieder rein. Zitate ändert man nicht!
+bc9a4ba - Axel Beckert, 6 weeks ago : Ausrufezeichen raus
+a18a4b5 - Frank Hofmann, 6 weeks ago : Linux-Dschungel: Was ist Debian, Feinschliff
+404a201 - Axel Beckert, 6 weeks ago : Wieder "Eine Reihe von Menschen" statt nur "Viele"
+a23f9e9 - Frank Hofmann, 6 weeks ago : Linux-Dschungel: Was ist Debian, Feinschliff
+cd40b11 - Frank Hofmann, 6 weeks ago : Einführung: Kapitelstruktur, Aufräumen
+...
+$
+----
+
+== Alle Commit-Messages in einer Zeile mit eigener Formatierung und Mergegraph ==
+
+* Schalter: 'log --pretty=format:"Formatoptionen" --graph'
+
+----
+git log --pretty=format:"%h - %an, %ar : %s" --graph
+*   a18a4b5 - Frank Hofmann, 6 weeks ago : Linux-Dschungel: Was ist Debian, Feinschliff
+|\  
+| * 404a201 - Axel Beckert, 6 weeks ago : Wieder "Eine Reihe von Menschen" statt nur "Viele"
+| * b5ce356 - Axel Beckert, 6 weeks ago : "speziell" bei Raspbian wieder rein
+| * 1a7a49c - Axel Beckert, 6 weeks ago : Bei "Des Weiteren" rollt's mir die Zehennägel hoch
+| * ddd1e36 - Axel Beckert, 6 weeks ago : "oder sehen es auf Ihrem digitalen Device" wieder raus
+* | a23f9e9 - Frank Hofmann, 6 weeks ago : Linux-Dschungel: Was ist Debian, Feinschliff
+|/  
+* cd40b11 - Frank Hofmann, 6 weeks ago : Einführung: Kapitelstruktur, Aufräumen
+...
+$
+----
+
+= Weiterführende Dokumente =
+
+* Valentin Haenel, Julius Plenz: Git. Verteilte Versionsverwaltung für
+Code und Dokumente, 2. Auflage, Open Source Press, München, 2014, SBN
+978-3-95539-119-5, http://www.gitbu.ch
+
+* Scott Chacon: Pro Git, apress, New York, 2009, ISBN 978-1-4302-1833-3
+
+
