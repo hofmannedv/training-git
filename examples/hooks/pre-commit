@@ -1,0 +1,52 @@
+#! /bin/bash
+
+# ------------------------------------------
+# (C) 2025 Frank Hofmann
+# Released under GNU Public License (GPL)
+# email frank.hofmann@efho.de
+# ------------------------------------------
+
+# get a list of files to be added, and are waiting in the staging area
+addedFiles=$(git diff --name-only --cached --diff-filter=A)
+
+# get a list of files to be changed or removed, and are waiting in the staging area
+otherFiles=$(git diff --name-only --cached --diff-filter=CMR)
+
+# do commits already exist?
+if git log 1>2 2>/dev/null 
+then
+    # get a list of previously added files, sorted by name
+    allTrackedFiles=$(git log --pretty=format: --name-only --diff-filter=A | sort -u)
+
+    # go though every file to be added
+    for testedFile in $addedFiles
+    do
+        if [[ "$allTrackedFiles" =~ "$testedFile" ]]
+        then
+            # file is already in the repo, and cannot be added twice
+            # reject entire commit
+            echo "$testedFile is already in the list of tracked files"
+            exit 1
+        fi
+        # file is not yet in the repo, and can be added to it
+        echo "preparing to add $testedFile"
+    done
+else
+    # go though every file to be added
+    for testedFile in $addedFiles
+    do
+        # file is not yet in the repo, and can be added to it
+        echo "preparing to add $testedFile"
+    done
+fi
+
+# test list of other files for being empty
+if [ ! -z "$otherFiles" ]
+then
+    # list is not empty, so reject entire commit
+    echo "list of changed/removed files must be empty"
+    echo "files: $otherFiles"
+    exit 2
+fi
+
+exit 0
