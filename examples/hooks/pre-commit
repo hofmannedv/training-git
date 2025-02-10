@@ -18,7 +18,7 @@ then
     # get a list of previously added files, sorted by name
     allTrackedFiles=$(git log --pretty=format: --name-only --diff-filter=A | sort -u)
 
-    # go though every file to be added
+    # go through every file to be added
     for testedFile in $addedFiles
     do
         if [[ "$allTrackedFiles" =~ "$testedFile" ]]
